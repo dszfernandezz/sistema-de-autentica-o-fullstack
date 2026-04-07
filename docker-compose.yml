@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_auth
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d auth_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: backend_auth
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Ajuste conforme suas variáveis usadas no código
+      DATABASE_URL: postgresql://admin:senha123@db:5432/auth_db
+      PORT: 3000
+    volumes:
+      - ./backend:/app          # para desenvolvimento com hot reload (opcional)
+      - /app/node_modules       # evita conflitos de módulos
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_auth
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    # Opcional: proxy do Vite já resolve CORS internamente; 
+    # mas com backend exposto na porta 3000, seu código atual funciona.
+    environment:
+      - VITE_API_URL=http://localhost:3000/api   # se quiser usar variável de ambiente
+
+volumes:
+  pgdata:

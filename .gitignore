@@ -1,0 +1,30 @@
+# Dependências
+node_modules/
+*/node_modules/
+
+# Variáveis de ambiente (NUNCA subir .env)
+.env
+*.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Arquivos de build
+dist/
+build/
+*/dist/
+*/build/
+
+# Arquivos de IDE
+.vscode/
+.idea/
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
