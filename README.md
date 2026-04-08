@@ -5,7 +5,7 @@
 
 ## Sobre o Projeto
 
-Sistema completo de autenticação de usuários desenvolvido para oferecer portifólio.
+Sistema completo de autenticação de usuários desenvolvido para portifólio pessoal.
 A aplicação possui desde a interface até a infraestrutura, com validações em tempo real e autenticação baseada em tokens JWT.
 
 ## Como foi Desenvolvido
