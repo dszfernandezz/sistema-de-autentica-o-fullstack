@@ -33,17 +33,20 @@ export const registerUser = async (req: Request, res: Response) => {
     return res.status(400).json({ error: { message: "E-mail inválido" } });
   }
 
+  // Limpa o CPF para garantir que só tenha numeros
   const cleanCPF = cpf.replace(/\D/g, "");
   if (cleanCPF.length !== 11) {
     return res.status(400).json({ error: { message: "O CPF deve conter 11 números." } });
   }
 
+  // limpa o telefone para garantir que só tenha numeros
   const cleanPhone = telefone.replace(/\D/g, "");
   if (cleanPhone.length < 10 || cleanPhone.length > 11) {
     return res.status(400).json({ error: { message: "O telefone deve conter 10 ou 11 números." } });
   }
 
   try {
+    // Verifica se o email ou CPF já estão cadastrados
     const userExists = await query(
       "SELECT id FROM usuarios where email = $1 OR cpf = $2",
       [email, cleanCPF],
@@ -53,8 +56,10 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ error: { message: "Email ou CPF já cadastrados" } });
     }
 
+    // hash da senha
     const hashedPassword = await bcrypt.hash(senha, 10);
 
+    // insere o usuário no banco de dados
     const sql = `
             INSERT INTO usuarios 
             (nome, email, senha, cpf, data_nascimento, telefone, endereco, complemento, cep)
@@ -74,7 +79,6 @@ export const registerUser = async (req: Request, res: Response) => {
 
 // faz login do usuario
 export const loginUser = async (req: Request, res: Response) => {
-  // AJUSTE: O Frontend envia 'cpf', então pegamos 'cpf' e limpamos aqui
   const { cpf, senha } = req.body;
   
   try {
@@ -112,7 +116,7 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-// ... as outras funções (checkEmail, checkPhone, preSignin) já estão com a estrutura correta!
+// verifica se o email já existe
 export const checkEmail = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -123,6 +127,7 @@ export const checkEmail = async (req: Request, res: Response) => {
   }
 }
 
+// verifica se o telefone já existe
 export const checkPhone = async (req: Request, res: Response) => {
   try {
     const { telefone } = req.body;
@@ -130,13 +135,13 @@ export const checkPhone = async (req: Request, res: Response) => {
     if (!telefone) {
       return res.status(400).json({ error: { message: "Telefone não fornecido" } });
     }
-
-    // Limpa a máscara (ex: (49) 99999-9999 -> 49999999999)
+    
+    
     const cleanPhone = telefone.replace(/\D/g, "");
 
     const result = await query("SELECT id FROM usuarios WHERE telefone = $1", [cleanPhone]);
     
-    // Retorna true se já existir, false se estiver disponível
+    // retorna true se já existir, false se estiver disponível
     return res.json({ exists: result.rows.length > 0 });
   } catch (err) {
     console.error("Erro ao verificar telefone:", err);
@@ -144,9 +149,10 @@ export const checkPhone = async (req: Request, res: Response) => {
   }
 }
 
+// faz a pré-autenticação do usuário, verificando se o CPF existe
 export const preSignin = async (req: Request, res: Response) => {
   try {
-    const { cpf } = req.body;   // <-- agora espera "cpf"
+    const { cpf } = req.body;
 
     if (!cpf) {
       return res.status(400).json({ 
@@ -156,7 +162,7 @@ export const preSignin = async (req: Request, res: Response) => {
 
     // Busca usuário pelo CPF
     const result = await query(
-      "SELECT nome, cpf FROM usuarios WHERE cpf = $1",
+      "SELECT cpf FROM usuarios WHERE cpf = $1",
       [cpf]
     );
 
@@ -169,8 +175,7 @@ export const preSignin = async (req: Request, res: Response) => {
     const user = result.rows[0];
 
     return res.status(200).json({
-      username: user.cpf,    // o frontend espera "username"
-      name: user.nome
+      username: user.cpf
     });
 
   } catch (err) {

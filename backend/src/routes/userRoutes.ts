@@ -3,7 +3,6 @@ import { registerUser, loginUser, checkEmail, checkPhone, preSignin } from '../c
 
 const router = Router();
 
-// quando chegar um POST em /register chama o controller
 router.post('/register', registerUser);
 router.post('/login', loginUser)
 router.post('/check-email', checkEmail)
