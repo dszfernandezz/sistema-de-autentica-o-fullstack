@@ -1,12 +1,12 @@
 import { useState } from "react";
 import useCheckEmail from "../hooks/useCheckEmail";
 import useCheckPhone from "../hooks/useCheckPhone";
-import { signupRequest, SignupData } from "../services/api"; // Importei a tipagem
+import { signupRequest, SignupData } from "../services/api";
 import HeaderBackLink from "../components/HeaderBackLink";
 import "../index.css";
 
 function SignupForm() {
-  // Alterado para bater com as chaves do SignupSchema (api.ts)
+  
   const [formData, setFormData] = useState({
     nome: "",
     endereco: "",
@@ -34,7 +34,6 @@ function SignupForm() {
 
   const verificaSignUp = async () => {
     try {
-      // Limpeza básica de máscaras antes de enviar
       const payload: SignupData = {
         ...formData,
         cpf: formData.cpf.replace(/\D/g, ""),
@@ -200,7 +199,7 @@ function SignupForm() {
             {/* Botão */}
             <div className="mt-8 flex items-center justify-center w-full md:col-span-2">
               <button
-                type="button" // Importante para não dar refresh na página
+                type="button"
                 className="w-full bg-purple-600 hover:bg-purple-800 disabled:bg-gray-300 text-white 
                 font-medium py-3 px-4 rounded-lg transition duration-150"
                 onClick={verificaSignUp}

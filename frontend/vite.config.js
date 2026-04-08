@@ -9,15 +9,6 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        configure: (proxy) => {
-          proxy.on('error', (err) => console.error('❌ Proxy error:', err.message));
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log(`🔄 Proxying ${req.method} ${req.url} → ${proxyReq.path}`);
-          });
-          proxy.on('proxyRes', (proxyRes, req) => {
-            console.log(`✅ Proxy response ${proxyRes.statusCode} for ${req.url}`);
-          });
-        }
       }
     }
   }

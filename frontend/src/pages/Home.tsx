@@ -6,7 +6,7 @@ function Home() {
     <div className="bg-white flex flex-col items-center justify-center
      text-black w-max rounded-4xl shadow-2xl max-w-3xl mx-auto mt-50 p-20">
       <div className="border-b border-gray-400 mb-10">
-        <h1 className="text-4xl font-bold border-b-gray-800 mt-2 mb-1">Bem-vindo a Three Pixels Sistemas!</h1>
+        <h1 className="text-4xl font-bold border-b-gray-800 mt-2 mb-1">Bem-vindo ao Sistema de Cadastro!</h1>
       </div>
 
       <div className="flex gap-4 mb-2">
